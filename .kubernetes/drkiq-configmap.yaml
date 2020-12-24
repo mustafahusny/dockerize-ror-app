@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: drkiq-config
+data:
+  cache_url: "redis://redis:6379/0"
+  database_url: "postgresql://drkiq:test_db_password@postgres:5432/drkiq?encoding=utf8&pool=5&timeout=5000"
+  job_worker_url: "redis://redis:6379/0"
+  listen_on: "0.0.0.0:8010"
+  secret_token: "Wa4Kdu6hMt3tYKm4jb9p4vZUuc7jBVFw"
+  worker_processes: "1"

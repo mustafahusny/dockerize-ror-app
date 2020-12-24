@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: drkiq
+  name: drkiq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: drkiq
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: drkiq
+    spec:
+      initContainers:
+        - name: drkiq-db-init
+          image: thethumbler/drkiq:latest
+          command: [ "bash", "-c", "rake db:migrate || (rake db:create && rake db:migrate)" ]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: drkiq-config
+                  key: database_url
+      containers:
+        - env:
+            - name: CACHE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: drkiq-config
+                  key: cache_url
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: drkiq-config
+                  key: database_url
+            - name: JOB_WORKER_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: drkiq-config
+                  key: job_worker_url
+            - name: LISTEN_ON
+              valueFrom:
+                configMapKeyRef:
+                  name: drkiq-config
+                  key: listen_on
+            - name: SECRET_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: drkiq-config
+                  key: secret_token
+            - name: WORKER_PROCESSES
+              valueFrom:
+                configMapKeyRef:
+                  name: drkiq-config
+                  key: worker_processes
+          image: thethumbler/drkiq:latest
+          name: drkiq
+          ports:
+            - containerPort: 8010
+          resources: {}
+      restartPolicy: Always
+status: {}

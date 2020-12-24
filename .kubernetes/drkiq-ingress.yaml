@@ -1,0 +1,13 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: drkiq-ingress
+spec:
+  rules:
+  - host: drkiq
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: drkiq
+          servicePort: 8010
